@@ -77,7 +77,7 @@ public static class SeedData
                 Title = "Ana Sunucu Erişilemiyor",
                 Description = "ERP sistemine giriş yapılamıyor, tüm departmanlar durdu.",
                 Location = "İstanbul / Maslak / Veri Merkezi",
-                Priority = Priority.High, Status = FaultStatus.YeniKayit,
+                Priority = Priority.High, Status = FaultStatus.Inceleniyor,
                 UserId = users[2].Id, CreatedAt = DateTime.UtcNow.AddHours(-1)
             },
             new FaultReport

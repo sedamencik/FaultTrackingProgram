@@ -14,6 +14,22 @@ public class NotificationService : INotificationService
         _repo = repo;
     }
 
+    public Task<ApiResponse<FaultReport>> CreateNotificationAsync(FaultReport report)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<NotificationPagedResult> GetNotificationsAsync(string? userRole, int userId, int page, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ApiResponse<FaultReport>> UpdateStatusAsync(int id, FaultStatus newStatus, int changedByUserId)
+    {
+        throw new NotImplementedException();
+    }
+
+    /*
     public async Task<NotificationPagedResult> GetNotificationsAsync(string? userRole, int userId, int page, int pageSize)
     {
         int? createdBy = string.Equals(userRole, nameof(Role.Admin), StringComparison.OrdinalIgnoreCase)
@@ -56,5 +72,5 @@ public class NotificationService : INotificationService
 
         await _repo.UpdateAsync(existing);
         return ApiResponse<FaultReport>.Ok(existing);
-    }
+    }*/
 }

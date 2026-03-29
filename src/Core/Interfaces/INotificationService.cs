@@ -6,7 +6,7 @@ namespace Core.Interfaces;
 
 public interface INotificationRepository
 {
-    Task<FaultReport?> GetByIdAsync(int id);
+    Task<FaultReportReadDto?> GetByIdAsync(int id);
 
     Task<(IEnumerable<FaultReport> Items, int TotalCount)> GetPagedAsync(
         FaultStatus? status, Priority? priority, string? location, int page, int pageSize, int? createdByUserId = null);

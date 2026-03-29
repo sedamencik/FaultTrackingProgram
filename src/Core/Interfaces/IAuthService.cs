@@ -6,7 +6,8 @@ namespace Core.Interfaces;
 public interface IAuthService
 {
     // Kullanıcı adı ve şifre ile giriş
-    Task<ApiResponse<string>> LoginAsync(string username, string password);
+    Task<string> LoginAsync(LoginDto login);
+
     
     // User nesnesinden JWT Token üretme
     string GenerateJwtToken(User user);

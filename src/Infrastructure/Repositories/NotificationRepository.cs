@@ -1,3 +1,4 @@
+using Core.DTOs;
 using Core.Entities;
 using Core.Helpers;
 using Core.Interfaces;
@@ -69,5 +70,10 @@ public class NotificationRepository : INotificationRepository
     {
         await _context.FaultStatusLogs.AddAsync(log);
         await _context.SaveChangesAsync();
+    }
+
+    Task<FaultReportReadDto?> INotificationRepository.GetByIdAsync(int id)
+    {
+        throw new NotImplementedException();
     }
 }
