@@ -138,7 +138,7 @@ public class UserController : ControllerBase
     /// <response code="500">Failed to retrieve notification.</response>
     [SwaggerOperation( Description = "Bu endpoint sadece User rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
     [HttpGet("reports")]
-    public async Task<ActionResult<List<NotificationReadDto>>> GetReports()
+    public async Task<ActionResult<List<NotificationReadDto>>> GetReports([FromQuery] NotificationFilterDto filter)
     {
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -148,7 +148,7 @@ public class UserController : ControllerBase
                 return Unauthorized(error);
         }
 
-        var reports = await _notificationRepository.GetNotificationsForSameUser(userId);
+        var reports = await _notificationRepository.GetNotificationsForSameUser(userId, filter);
         if (reports == null || !reports.Any())
         {
                 ErrorResult error = new ErrorResult { Message = "No notification found for the authenticated user." };

@@ -33,7 +33,7 @@ public class AdminController : ControllerBase
     [SwaggerOperation(
     Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")]  
     [HttpGet("reports")]
-    public async Task<ActionResult<List<NotificationReadDto>>?> GetReports()
+    public async Task<ActionResult<List<NotificationReadDto>>?> GetReports([FromQuery] NotificationFilterDto filter)
     {
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -43,7 +43,7 @@ public class AdminController : ControllerBase
                 return Unauthorized(error);
         }
 
-        var reports = await _notificationRepository.GetAllNotificationsAsync();
+        var reports = await _notificationRepository.GetAllNotificationsAsync(filter);
         if (reports == null || !reports.Any())
         {
                 ErrorResult error = new ErrorResult { Message = "No notification found." };
@@ -218,9 +218,9 @@ public class AdminController : ControllerBase
     [SwaggerOperation(
     Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
     [HttpGet("userReports")]
-    public async Task<ActionResult<List<NotificationReadDto>>?> GetNotificationsForSameUser([FromQuery] string userId)
+    public async Task<ActionResult<List<NotificationReadDto>>?> GetNotificationsForSameUser([FromQuery] string userId, [FromQuery] NotificationFilterDto filter)
     {
-        var reports = await _notificationRepository.GetNotificationsForSameUser(userId);
+        var reports = await _notificationRepository.GetNotificationsForSameUser(userId, filter);
         if (reports == null || !reports.Any())
         {
                 ErrorResult error = new ErrorResult { Message = "No notification found for that user." };

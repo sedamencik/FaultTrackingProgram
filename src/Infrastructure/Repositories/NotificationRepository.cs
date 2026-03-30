@@ -54,29 +54,76 @@ public class NotificationRepository : INotificationRepository
         return _mapper.Map<NotificationReadDto>(existingReport);
     }
 
-    public async Task<IEnumerable<NotificationReadDto>> GetNotificationsForSameUser(string userId)
-    {
-        var userFound = await _context.Users.AnyAsync(r => r.Id == userId);
-        if (!userFound)
-        {
-            throw new ArgumentException("User cannot found.");
-        }
-        var reports = await _context.FaultReports
-            .Where(s => s.UserId == userId)
-            .Include(x => x.User) // Bu satır kritik!
-            .ToListAsync();
+public async Task<IEnumerable<NotificationReadDto>> GetAllNotificationsAsync(NotificationFilterDto filter)
+{
+    var query = _context.FaultReports
+        .Include(r => r.User)
+        .AsNoTracking()
+        .AsQueryable();
 
-        return _mapper.Map<IEnumerable<NotificationReadDto>>(reports);
+    // Filtreleme ve Sıralama Uygula
+    query = ApplyFilterAndSort(query, filter);
+
+    // Sayfalama (Pagination)
+    var reports = await query
+        .Skip((filter.Page - 1) * filter.PageSize)
+        .Take(filter.PageSize)
+        .ToListAsync();
+
+    return _mapper.Map<IEnumerable<NotificationReadDto>>(reports);    
+}
+
+public async Task<IEnumerable<NotificationReadDto>> GetNotificationsForSameUser(string userId, NotificationFilterDto filter)
+{
+    var userFound = await _context.Users.AnyAsync(r => r.Id == userId);
+    if (!userFound)
+    {
+        throw new ArgumentException("User not found.");
     }
 
-    public async Task<IEnumerable<NotificationReadDto>> GetAllNotificationsAsync()
+    var query = _context.FaultReports
+        .Where(s => s.UserId == userId)
+        .Include(x => x.User)
+        .AsNoTracking()
+        .AsQueryable();
+
+    // Filtreleme ve Sıralama Uygula
+    query = ApplyFilterAndSort(query, filter);
+
+    // Sayfalama (Pagination)
+    var reports = await query
+        .Skip((filter.Page - 1) * filter.PageSize)
+        .Take(filter.PageSize)
+        .ToListAsync();
+
+    return _mapper.Map<IEnumerable<NotificationReadDto>>(reports);
+}
+
+// YARDIMCI METOT
+private IQueryable<FaultReport> ApplyFilterAndSort(IQueryable<FaultReport> query, NotificationFilterDto filter)
+{
+    // 1. Duruma Göre Filtrele
+    if (filter.Status.HasValue)
+        query = query.Where(r => r.Status == filter.Status.Value);
+
+    // 2. Önceliğe Göre Filtrele
+    if (filter.Priority.HasValue)
+        query = query.Where(r => r.Priority == filter.Priority.Value);
+
+    // 3. Lokasyona Göre Filtrele (Metin eşleşmesi)
+    if (!string.IsNullOrEmpty(filter.Location))
+        query = query.Where(r => r.Location.Contains(filter.Location));
+
+    // 4. Sıralama (Öncelik veya Tarih)
+    query = filter.SortBy?.ToLower() switch
     {
-        var reports = await _context.FaultReports
-            .Include(r => r.User) // FaultReport içindeki 'User' property'sini doldurur
-            .AsNoTracking()
-            .ToListAsync();
-        return _mapper.Map<IEnumerable<NotificationReadDto>>(reports);    
-    }
+        "priority" => query.OrderByDescending(r => r.Priority),
+        "createdat" => query.OrderByDescending(r => r.CreatedAt),
+        _ => query.OrderByDescending(r => r.CreatedAt) // Varsayılan: En yeni kayıt en üstte
+    };
+
+    return query;
+}
     
     public async Task<FaultReport?> GetByIdAsync(string id)
     {

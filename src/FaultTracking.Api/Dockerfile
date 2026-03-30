@@ -6,7 +6,6 @@ RUN dotnet restore FaultTracking.Api/FaultTracking.Api.csproj
 
 COPY Core/ Core/
 COPY Infrastructure/ Infrastructure/
-COPY Controllers/ Controllers/
 COPY FaultTracking.Api/ FaultTracking.Api/
 
 RUN dotnet build FaultTracking.Api/FaultTracking.Api.csproj -c Release -o /app/build

@@ -8,8 +8,8 @@ public interface INotificationRepository
 {
     Task AddNotificationAsync(string userId, NotificationCreateDto report);//User can use
     Task<NotificationReadDto> UpdateNotificationAsync(string reportId, NotificationCreateDto report);//User can use
-    Task<IEnumerable<NotificationReadDto>> GetNotificationsForSameUser(string userId);//User can use
-    Task<IEnumerable<NotificationReadDto>> GetAllNotificationsAsync();//Admin can use
+    Task<IEnumerable<NotificationReadDto>> GetNotificationsForSameUser(string userId, NotificationFilterDto filter);//User can use
+    Task<IEnumerable<NotificationReadDto>> GetAllNotificationsAsync(NotificationFilterDto filter);//Admin can use
 
 
     Task<FaultReport?> GetByIdAsync(string id);
