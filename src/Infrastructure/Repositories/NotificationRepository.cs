@@ -61,11 +61,12 @@ public class NotificationRepository : INotificationRepository
         {
             throw new ArgumentException("User cannot found.");
         }
-        var report = await _context.FaultReports
+        var reports = await _context.FaultReports
             .Where(s => s.UserId == userId)
+            .Include(x => x.User) // Bu satır kritik!
             .ToListAsync();
 
-        return _mapper.Map<IEnumerable<NotificationReadDto>>(report);
+        return _mapper.Map<IEnumerable<NotificationReadDto>>(reports);
     }
 
     public async Task<IEnumerable<NotificationReadDto>> GetAllNotificationsAsync()
