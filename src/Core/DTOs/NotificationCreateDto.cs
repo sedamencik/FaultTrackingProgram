@@ -5,7 +5,7 @@ namespace Core.DTOs;
 /// <summary>
 /// POST body: Id ve kullanıcı alanları sunucuda atanır (Id veritabanı identity).
 /// </summary>
-public class FaultReportCreateDto
+public class NotificationCreateDto
 {
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;

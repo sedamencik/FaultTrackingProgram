@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // --- 2. REPOSITORY VE SERVICE KAYITLARI ---
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
+//builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 // --- 3. DİĞER SERVİSLER ---
@@ -25,33 +26,51 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
+    // 1. Genel Bilgiler ve Annotations (Attribute kullanımı için)
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "FaultTracking API", Version = "v1" });
+    opt.EnableAnnotations(); // Annotations desteğini burada aktif ediyoruz
 
-    // Buradaki kritik nokta: SecuritySchemeType.Http ve Scheme = "bearer"
+    // 2. JWT Güvenlik Tanımı (Bearer otomatik ekleyen versiyon)
     opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http, // ApiKey yerine Http seçtik
-        Scheme = "bearer",             // Küçük harfle bearer
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
         BearerFormat = "JWT",
         Description = "Sadece JWT Token'ınızı yapıştırın. 'Bearer' kelimesini sistem otomatik ekleyecektir."
     });
 
     opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+{
     {
+        new OpenApiSecurityScheme
         {
-            new OpenApiSecurityScheme
+            Reference = new OpenApiReference
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[]{}
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer" // Bu ID, AddSecurityDefinition içinde verdiğin isimle (Bearer) aynı olmalı
+            }
+        },
+        Array.Empty<string>()
+    }
+});
+
+    // 3. XML Yorumları Dosya Yolu
+    try 
+    {
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        
+        if (File.Exists(xmlPath))
+        {
+            opt.IncludeXmlComments(xmlPath);
         }
-    });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Swagger XML yüklenirken hata oluştu: {ex.Message}");
+    }
 });
 
 // 1. JWT Ayarlarını Oku ve Kaydet
@@ -79,7 +98,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 

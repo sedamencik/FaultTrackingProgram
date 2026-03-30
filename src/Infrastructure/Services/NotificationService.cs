@@ -5,6 +5,7 @@ using Core.Interfaces;
 
 namespace Infrastructure.Services;
 
+/*
 public class NotificationService : INotificationService
 {
     private readonly INotificationRepository _repo;
@@ -29,7 +30,7 @@ public class NotificationService : INotificationService
         throw new NotImplementedException();
     }
 
-    /*
+    
     public async Task<NotificationPagedResult> GetNotificationsAsync(string? userRole, int userId, int page, int pageSize)
     {
         int? createdBy = string.Equals(userRole, nameof(Role.Admin), StringComparison.OrdinalIgnoreCase)
@@ -72,5 +73,5 @@ public class NotificationService : INotificationService
 
         await _repo.UpdateAsync(existing);
         return ApiResponse<FaultReport>.Ok(existing);
-    }*/
-}
+    }
+}*/

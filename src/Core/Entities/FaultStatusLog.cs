@@ -4,7 +4,7 @@ namespace Core.Entities;
 
 public class FaultStatusLog
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public int FaultReportId { get; set; }
     public FaultReport FaultReport { get; set; } = null!;
 
@@ -12,6 +12,6 @@ public class FaultStatusLog
     public FaultStatus NewStatus { get; set; }
 
     public DateTime ChangedAt { get; set; } = DateTime.UtcNow;
-    public int ChangedById { get; set; }
+    public string ChangedById { get; set; }
     public User ChangedBy { get; set; } = null!;
 }

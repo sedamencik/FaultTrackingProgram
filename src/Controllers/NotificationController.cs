@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace API.Controllers;
-
+/*
 [Authorize] // Token'sız kimse giremez
 [ApiController]
 [Route("api/[controller]")]
@@ -52,4 +52,4 @@ public class NotificationsController : ControllerBase
         if (!result.Success) return UnprocessableEntity(result); // 422 Hatası (Gereksinim #5)
         return Ok(result);
     }
-}
+}*/

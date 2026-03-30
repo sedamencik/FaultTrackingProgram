@@ -3,6 +3,7 @@ using Core.DTOs;
 using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers;
 
@@ -18,7 +19,15 @@ public class AccountController : ControllerBase
     }
 
 
-    [HttpPost("login")]
+    /// <summary>
+    ///  Click to login seeded email and password of user types, and log in as one.
+    /// </summary>
+    [SwaggerOperation(
+        Summary = "Seeded kullanıcılarla giriş yapın",
+        Description = "User: zeynep@sirket.com / pass123 | Admin: caner@sirket.com / hash123"
+    )]    
+    /// <returns>A response containing the authentication token.</returns>
+    [HttpPost("login")]    
     public async Task<ActionResult<string>> Login([FromQuery] LoginDto request)
     {
         var token = await _authService.LoginAsync(request);

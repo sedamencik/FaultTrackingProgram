@@ -2,7 +2,7 @@ using Core.Helpers;
 
 namespace Core.DTOs;
 
-public class FaultReportReadDto
+public class NotificationReadDto
 {
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
