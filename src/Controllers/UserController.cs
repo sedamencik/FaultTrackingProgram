@@ -66,6 +66,7 @@ public class UserController : ControllerBase
     /// <summary>
     /// Updates a Fault Report.
     /// </summary>
+    /// <param name="reportId">Fault Report ID.</param>
     /// <param name="report">Fault Report details.</param>
     /// <returns>Update report result.</returns>
     [HttpPut("report")]
@@ -138,9 +139,57 @@ public class UserController : ControllerBase
                 return NotFound(error);
         }
 
-            SuccessDataResult<IEnumerable<NotificationReadDto>> success = new SuccessDataResult<IEnumerable<NotificationReadDto>> { Message = "Routes retrieved successfully.", Data = reports };
-            return Ok(success);
+        SuccessDataResult<IEnumerable<NotificationReadDto>> success = new SuccessDataResult<IEnumerable<NotificationReadDto>> { Message = "Notifications retrieved successfully.", Data = reports };
+        return Ok(success);
+    }
+
+    /// <summary>
+    /// Deletes a Fault Report.
+    /// </summary>
+    /// <param name="reportId">Fault Report ID.</param>
+    /// <returns>Delete report result.</returns>
+    [HttpDelete("report")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> DeleteNotification([FromQuery] string reportId)
+    {
+
+        // Token'dan gelen gerçek kullanıcı ID'sini alıyoruz
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            ErrorResult error = new ErrorResult { Message = "Unauthorized access." };
+            return Unauthorized(error);
         }
 
-    
+        if (!ModelState.IsValid)
+        {
+            var errorResult = new ErrorDataResult<object>
+            {
+                Message = "Validation errors occurred.",
+                Errors = ModelState.GetErrors()
+            };
+            return BadRequest(errorResult);
+        }
+        var report = await _notificationRepository.GetByIdAsync(reportId);
+
+        if (userIdClaim == null || report == null || report == null)
+        {
+            ErrorResult error = new ErrorResult { Message = "User Id or Report empty." };
+            return BadRequest(error);
+        }
+
+        if (report.UserId != userIdClaim)
+        {
+            ErrorResult error = new ErrorResult { Message = "Unauthorized delete the report." };
+            return Unauthorized(error);
+        }
+
+        await _notificationRepository.DeleteAsync(report.Id);
+
+        SuccessResult successResponse = new SuccessResult { Message = "Notification deleted successfully." };
+        return Ok(successResponse);
+    }
+
 }

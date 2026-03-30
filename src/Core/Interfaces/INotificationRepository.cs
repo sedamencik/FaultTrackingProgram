@@ -16,7 +16,7 @@ public interface INotificationRepository
     //Task<(IEnumerable<FaultReport> Items, int TotalCount)> GetPagedAsync(FaultStatus? status, Priority? priority, string? location, int page, int pageSize, int? createdByUserId = null);
 
     Task<bool> AnyInLocationWithinHourAsync(string location);
-
+    Task DeleteAsync(string id);
     //Task AddStatusLogAsync(FaultStatusLog log);
 
 }

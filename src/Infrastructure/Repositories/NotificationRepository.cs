@@ -113,6 +113,19 @@ public class NotificationRepository : INotificationRepository
             .AnyAsync(x => x.Location == location && x.CreatedAt >= oneHourAgo);
     }
 
+    public async Task DeleteAsync(string id)
+    {
+        var report = await _context.FaultReports.FirstOrDefaultAsync(s => s.Id == id );
+            
+        if (report == null)
+        {
+            throw new ArgumentException($"No report found with ID '{id}'.");
+        }
+
+        _context.FaultReports.Remove(report);
+        await _context.SaveChangesAsync();    
+    }
+
     /*public async Task AddStatusLogAsync(FaultStatusLog log)
     {
         await _context.FaultStatusLogs.AddAsync(log);
