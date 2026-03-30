@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Core.Interfaces;
-using Core.Entities;
+using Middleware;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -9,8 +9,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Reflection;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// Serilog Yapılandırması
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day) // Her gün yeni dosya
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 
 // --- 1. VERİTABANI BAĞLANTISI ---
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -138,6 +150,9 @@ if (app.Environment.IsDevelopment() || true) // Docker'da swagger görebilmek i�
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<Middleware.RequestLoggingMiddleware>();
+
 app.MapControllers();
 
 app.Run();
