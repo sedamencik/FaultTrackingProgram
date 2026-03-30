@@ -4,6 +4,7 @@ using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers;
 
@@ -25,6 +26,7 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="report">Fault Report details.</param>
     /// <returns>Add report result.</returns>
+    [SwaggerOperation( Description = "Bu endpoint sadece User rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
     [HttpPost("report")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -55,6 +57,16 @@ public class UserController : ControllerBase
             ErrorResult error = new ErrorResult { Message = "User Id or Report empty." };
             return BadRequest(error);
         }
+
+        var isDuplicate = await _notificationRepository.AnyInLocationWithinHourAsync(report.Location);
+
+        if (isDuplicate)
+        {
+            // Kural ihlali: 422 Unprocessable Entity ve açıklayıcı mesaj
+            return UnprocessableEntity(new { 
+               Message = "Aynı lokasyon için 1 saat içinde yalnızca bir bildirim yapılabilir. Lütfen daha sonra tekrar deneyiniz." 
+            });
+        }
         
         await _notificationRepository.AddNotificationAsync(userIdClaim, report);
 
@@ -69,6 +81,7 @@ public class UserController : ControllerBase
     /// <param name="reportId">Fault Report ID.</param>
     /// <param name="report">Fault Report details.</param>
     /// <returns>Update report result.</returns>
+    [SwaggerOperation( Description = "Bu endpoint sadece User rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
     [HttpPut("report")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -121,6 +134,7 @@ public class UserController : ControllerBase
     /// <response code="401">Unauthorized access.</response>
     /// <response code="404">No notification found for the authenticated user.</response>
     /// <response code="500">Failed to retrieve notification.</response>
+    [SwaggerOperation( Description = "Bu endpoint sadece User rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
     [HttpGet("reports")]
     public async Task<ActionResult<List<NotificationReadDto>>> GetReports()
     {
@@ -148,6 +162,7 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="reportId">Fault Report ID.</param>
     /// <returns>Delete report result.</returns>
+    [SwaggerOperation( Description = "Bu endpoint sadece User rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
     [HttpDelete("report")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -174,7 +189,7 @@ public class UserController : ControllerBase
         }
         var report = await _notificationRepository.GetByIdAsync(reportId);
 
-        if (userIdClaim == null || report == null || report == null)
+        if (userIdClaim == null || report == null)
         {
             ErrorResult error = new ErrorResult { Message = "User Id or Report empty." };
             return BadRequest(error);

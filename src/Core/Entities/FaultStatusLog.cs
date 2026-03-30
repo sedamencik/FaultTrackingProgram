@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Core.Helpers;
 
 namespace Core.Entities;
@@ -5,8 +6,12 @@ namespace Core.Entities;
 public class FaultStatusLog
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public int FaultReportId { get; set; }
-    public FaultReport FaultReport { get; set; } = null!;
+
+    // Foreign Key (Tipinin FaultReport.Id ile aynı olduğundan emin ol - string mi int mi?)
+    public string FaultReportId { get; set; } 
+    
+    [ForeignKey("FaultReportId")] // Bu satır EF Core'a "Uydurma, bunu kullan" der.
+    public FaultReport FaultReport { get; set; }
 
     public FaultStatus OldStatus { get; set; }
     public FaultStatus NewStatus { get; set; }

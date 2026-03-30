@@ -131,4 +131,40 @@ public class NotificationRepository : INotificationRepository
         await _context.FaultStatusLogs.AddAsync(log);
         await _context.SaveChangesAsync();
     }*/
+
+
+    public bool IsStatusTransitionValid(FaultStatus currentStatus, FaultStatus nextStatus)
+    {
+        return (currentStatus, nextStatus) switch
+        {
+            (FaultStatus.YeniKayit, FaultStatus.Inceleniyor) => true,            
+            (FaultStatus.YeniKayit, FaultStatus.Iptal) => true,
+            (FaultStatus.Inceleniyor, FaultStatus.Atandi) => true,
+            (FaultStatus.Inceleniyor, FaultStatus.Asilsiz) => true,
+            (FaultStatus.Inceleniyor, FaultStatus.Iptal) => true,
+            (FaultStatus.Atandi, FaultStatus.Calisiliyor) => true,
+            (FaultStatus.Atandi, FaultStatus.Iptal) => true,
+            (FaultStatus.Calisiliyor, FaultStatus.Tamamlandi) => true,
+            (FaultStatus.Calisiliyor, FaultStatus.Iptal) => true,
+
+            // Geçersiz geçişler:
+            (FaultStatus.Tamamlandi, _) => false, // Çözülmüş bir kayıt değiştirilemez
+            (FaultStatus.Iptal, _) => false, // İptal edilmiş bir kayıt değiştirilemez
+            (FaultStatus.Asilsiz, _) => false, // İptal edilmiş bir kayıt değiştirilemez
+            _ => false
+        };
+    }
+
+    public async Task UpdateStatusAsync(string id, FaultStatus currentStatus)
+    {
+        var existingReport = await _context.FaultReports.FindAsync(id);
+        if (existingReport == null)
+        {
+            throw new ArgumentException($"No report found with ID '{id}'.");
+        }
+        existingReport.Status = currentStatus;
+        existingReport.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+    }
 }

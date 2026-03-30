@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Core.Helpers; 
 
 namespace Core.Entities;
@@ -13,8 +14,9 @@ public class FaultReport
     public Priority Priority { get; set; } = Priority.Medium;
     public FaultStatus Status { get; set; } = FaultStatus.YeniKayit;
 
-
+    
     public string UserId { get; set; } 
+    [ForeignKey("UserId")]
     public User User { get; set; } = null!; 
 
 
