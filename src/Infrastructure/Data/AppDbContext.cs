@@ -9,18 +9,9 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<FaultReport> FaultReports { get; set; }
-    public DbSet<FaultStatusLog> FaultStatusLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        // SQL Server: User -> FaultReport -> FaultStatusLog ve User -> FaultStatusLog (ChangedById)
-        // ikisi de CASCADE olunca "multiple cascade paths" hatası verir.
-        modelBuilder.Entity<FaultStatusLog>()
-            .HasOne(l => l.ChangedBy)
-            .WithMany()
-            .HasForeignKey(l => l.ChangedById)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

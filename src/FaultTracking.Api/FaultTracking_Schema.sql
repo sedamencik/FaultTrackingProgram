@@ -36,18 +36,6 @@ CREATE TABLE [FaultReports] (
 );
 GO
 
-CREATE TABLE [FaultStatusLogs] (
-    [Id] nvarchar(450) NOT NULL,
-    [FaultReportId] nvarchar(450) NOT NULL,
-    [OldStatus] int NOT NULL,
-    [NewStatus] int NOT NULL,
-    [ChangedAt] datetime2 NOT NULL,
-    [ChangedById] nvarchar(450) NOT NULL,
-    CONSTRAINT [PK_FaultStatusLogs] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_FaultStatusLogs_FaultReports_FaultReportId] FOREIGN KEY ([FaultReportId]) REFERENCES [FaultReports] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_FaultStatusLogs_Users_ChangedById] FOREIGN KEY ([ChangedById]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
-);
-GO
 
 CREATE INDEX [IX_FaultReports_UserId] ON [FaultReports] ([UserId]);
 GO
