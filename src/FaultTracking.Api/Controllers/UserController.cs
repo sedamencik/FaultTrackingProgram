@@ -5,9 +5,11 @@ using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace API.Controllers;
 
+[EnableRateLimiting("fixed")]
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Roles = "User")]    

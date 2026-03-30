@@ -10,6 +10,8 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Reflection;
 using Serilog;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -119,7 +121,25 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+// Rate Limiting Politikası
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter(policyName: "fixed", opt =>
+    {
+        opt.PermitLimit = 10; // Maksimum istek sayısı
+        opt.Window = TimeSpan.FromMinutes(1); // Süre (1 dakika)
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0; // Kuyruğa alma, direkt reddet
+    });
+
+    // Sınır aşıldığında dönecek hata mesajı ve kodu (429 Too Many Requests)
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 var app = builder.Build();
+
+app.UseRateLimiter();
+
 
 // Middleware Sıralaması 
 app.UseAuthentication(); 
@@ -151,7 +171,8 @@ if (app.Environment.IsDevelopment() || true) // Docker'da swagger görebilmek i�
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<Middleware.RequestLoggingMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();      
 
 app.MapControllers();
 

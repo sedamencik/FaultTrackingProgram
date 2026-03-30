@@ -4,9 +4,11 @@ using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace API.Controllers;
 
+[EnableRateLimiting("fixed")]
 [ApiController]
 [Route("api/[controller]")]
 public class AccountController : ControllerBase
