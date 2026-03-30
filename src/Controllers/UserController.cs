@@ -26,7 +26,8 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="report">Fault Report details.</param>
     /// <returns>Add report result.</returns>
-    [SwaggerOperation( Description = "Bu endpoint sadece User rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
+    [SwaggerOperation( Description = "Bu endpoint sadece User rolüne sahip kullanıcılar içindir. Bearer Token gereklidir."+
+    " (Priority: 0-Low, 1-Medium, 2-High)")] 
     [HttpPost("report")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -81,7 +82,8 @@ public class UserController : ControllerBase
     /// <param name="reportId">Fault Report ID.</param>
     /// <param name="report">Fault Report details.</param>
     /// <returns>Update report result.</returns>
-    [SwaggerOperation( Description = "Bu endpoint sadece User rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
+    [SwaggerOperation( Description = "Bu endpoint sadece User rolüne sahip kullanıcılar içindir. Bearer Token gereklidir."+
+    " (Priority: 0-Low, 1-Medium, 2-High)")] 
     [HttpPut("report")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]

@@ -34,8 +34,14 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<IEnumerable<UserDto>> GetAllAsync(){
-        var users = await _context.Users.ToListAsync();
-        return _mapper.Map<IEnumerable<UserDto>>(users);  
+        var users = await _context.Users
+            .Include(u => u.FaultReports) 
+            .AsNoTracking()             
+            .ToListAsync();
+
+        var usersDto = _mapper.Map<IEnumerable<UserDto>>(users);
+
+    return usersDto;
     }
 
     public async Task CreateAsync(UserCreateDto user){

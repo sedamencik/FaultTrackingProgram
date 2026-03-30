@@ -61,7 +61,8 @@ public class AdminController : ControllerBase
     /// <param name="report">Fault Report details.</param>
     /// <returns>Add report result.</returns>
     [SwaggerOperation(
-    Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
+    Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir." +
+    " (Priority: 0-Low, 1-Medium, 2-High)")] 
     [HttpPost("report")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -116,7 +117,8 @@ public class AdminController : ControllerBase
     /// <param name="report">Fault Report details.</param>
     /// <returns>Update report result.</returns>
     [SwaggerOperation(
-    Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
+    Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir."+
+    " (Priority: 0-Low, 1-Medium, 2-High)")] 
     [HttpPut("report")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -267,7 +269,8 @@ public class AdminController : ControllerBase
     /// <param name="report">User details.</param>
     /// <returns>Add user result.</returns>
     [SwaggerOperation(
-    Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
+    Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir."+
+    " (Role: 0-Admin, 1-User)")] 
     [HttpPost("user")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -312,7 +315,8 @@ public class AdminController : ControllerBase
     /// <param name="user">User details.</param>
     /// <returns>Update user result.</returns>
     [SwaggerOperation(
-    Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
+    Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir."+
+    " (Role: 0-Admin, 1-User)")] 
     [HttpPut("user")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -403,8 +407,9 @@ public class AdminController : ControllerBase
     /// <param name="id">Fault Report ID.</param>
     /// <param name="dto">Report's Status.</param>
     /// <returns>Delete report result.</returns>
-    [SwaggerOperation(Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir.")] 
-    [HttpPatch("{id}/status")]
+    [SwaggerOperation(Description = "Bu endpoint sadece Admin rolüne sahip kullanıcılar içindir. Bearer Token gereklidir."+
+    " (NewStatus: 0-YeniKayit, 1-Inceleniyor, 2-Atandi, 3-Calisiliyor, 4-Tamamlandi, 5-Iptal, 6-Asilsiz)")] 
+    [HttpPut("status")]
     public async Task<IActionResult> UpdateStatus([FromQuery] string id, [FromQuery] UpdateStatusDto dto)
     {
         var faultReport = await _notificationRepository.GetByIdAsync(id);

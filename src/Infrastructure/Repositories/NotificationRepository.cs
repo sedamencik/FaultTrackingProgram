@@ -31,7 +31,7 @@ public class NotificationRepository : INotificationRepository
             Location = report.Location,
             Priority = report.Priority,
             UserId = userId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
         };
         await _context.FaultReports.AddAsync(newReport);
         await _context.SaveChangesAsync();
@@ -71,7 +71,10 @@ public class NotificationRepository : INotificationRepository
 
     public async Task<IEnumerable<NotificationReadDto>> GetAllNotificationsAsync()
     {
-        var reports = await _context.FaultReports.ToListAsync();
+        var reports = await _context.FaultReports
+            .Include(r => r.User) // FaultReport içindeki 'User' property'sini doldurur
+            .AsNoTracking()
+            .ToListAsync();
         return _mapper.Map<IEnumerable<NotificationReadDto>>(reports);    
     }
     

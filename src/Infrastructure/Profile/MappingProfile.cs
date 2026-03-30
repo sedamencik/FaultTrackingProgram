@@ -14,6 +14,8 @@ public class MappingProfile : Profile
             // İlişkili tablodaki UserName'i çekiyoruz
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
             
-        // Eğer tam tersi de lazımsa: CreateMap<NotificationReadDto, FaultReport>();
+        CreateMap<User, UserDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)) // Açıkça belirtelim
+            .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()));
     }
 }
