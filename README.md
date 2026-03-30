@@ -4,14 +4,14 @@ Bu proje, kurumsal ortamlarda teknik arıza bildirimlerini yönetmek, takip etme
 ## 🚀 Projeyi Çalıştırma Adımları
 Projeyi çalıştırmak için bilgisayarınızda Docker ve Docker Desktop kurulu olmalıdır.
 
-1. Projeyi Klonlayın
+### 1. Projeyi Klonlayın
 
 Bash
 
 git clone https://github.com/sedamencik/FaultTrackingProgram.git
 
 
-2. Sistemi Ayağa Kaldırın (Temiz Kurulum)
+### 2. Sistemi Ayağa Kaldırın (Temiz Kurulum)
 
 Aşağıdaki komut; SQL Server ve Web API konteynerlarını yapılandırır, bağımlılıkları yükler ve sistemi başlatır. 
 
@@ -22,7 +22,7 @@ docker compose down -v
 docker compose up -d --build
 
 
-3. Veritabanı ve Erişim
+### 3. Veritabanı ve Erişim
 
 Konteynerlar ayağa kalktığında API, SQL Server'a otomatik olarak bağlanır.
 
