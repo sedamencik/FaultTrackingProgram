@@ -10,6 +10,7 @@ Bash
 
 git clone https://github.com/sedamencik/FaultTrackingProgram.git
 
+
 2. Sistemi Ayağa Kaldırın (Temiz Kurulum)
 
 Aşağıdaki komut; SQL Server ve Web API konteynerlarını yapılandırır, bağımlılıkları yükler ve sistemi başlatır. 
@@ -20,6 +21,7 @@ docker compose down -v
 
 docker compose up -d --build
 
+
 3. Veritabanı ve Erişim
 
 Konteynerlar ayağa kalktığında API, SQL Server'a otomatik olarak bağlanır.
@@ -28,7 +30,7 @@ Swagger UI: http://localhost:5005/swagger
 
 API Base URL: http://localhost:5005/api
 
-### 🏗️ Kullanılan Teknolojiler ve Kütüphaneler
+## 🏗️ Kullanılan Teknolojiler ve Kütüphaneler
 Framework: .NET 8.0 (Web API)
 
 Database: Microsoft SQL Server
@@ -43,7 +45,7 @@ Containerization: Docker & Docker Compose
 
 Documentation: Swagger / OpenAPI
 
-### 🔄 Durum Makinesi (State Machine) Akışı
+## 🔄 Durum Makinesi (State Machine) Akışı
 Sistemdeki arıza bildirimleri kontrolsüz bir şekilde durum değiştiremez. Veri bütünlüğünü korumak adına aşağıdaki mantıksal akış uygulanmıştır:
 
 YeniKayit: Her bildirim bu statüde başlar.
@@ -59,7 +61,7 @@ Iptal / Asilsiz: Kayıt, tamamlanmadığı sürece herhangi bir aşamada iptal e
 [!IMPORTANT]
 Geçersiz bir durum değişikliği isteğinde (örn: Yeni kaydı direkt tamamlandıya çekmek) API 422 Unprocessable Entity hatası döner.
 
-### 🏛️ Mimari Kararlar ve Gerekçeler
+## 🏛️ Mimari Kararlar ve Gerekçeler
 Clean Architecture (N-Tier): Proje; Core, Infrastructure ve API katmanlarına bölünmüştür. Bu sayede veritabanı veya dış servis bağımlılıkları değişse bile çekirdek iş mantığı (Business Logic) korunur.
 
 Repository Pattern: Veri erişim operasyonları soyutlanarak merkezi bir yapıya alınmış, böylece kod tekrarı önlenmiş ve test edilebilir bir yapı kurulmuştur.
@@ -70,5 +72,5 @@ Structured Logging: Serilog entegrasyonu ile her isteğin metodu, yolu, yanıt s
 
 Rate Limiting: API güvenliği için Fixed Window algoritması kullanılarak IP bazlı hız sınırlandırması uygulanmıştır (1 dk / 10 istek). Sınır aşıldığında sistem otomatik olarak 429 Too Many Requests yanıtı döner.
 
-### ⚠️ Eksik Bırakılan veya Geliştirilmesi Gereken Kısımlar
+## ⚠️ Eksik Bırakılan veya Geliştirilmesi Gereken Kısımlar
 Unit Tests: Yaşadığım ailevi kayıp (vefat) nedeniyle Repository ve Controller katmanları için planlanan Unit Test (xUnit/Moq) çalışmaları tamamlanamamıştır.
